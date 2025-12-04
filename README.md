@@ -16,25 +16,25 @@ When executing the program for the first time, it may take longer than usual (es
 ### MacOS & Linux
 
 ```bash
-brew install path
+brew install --cask eepzii/tap/paddock
 ```
 
 ### Windows
 
 ```bash
-    scoop bucket add paddock path
-    scoop install paddock
+scoop bucket add paddock https://github.com/eepzii/scoop-bucket
+scoop install paddock
 ```
 
 ### Using curl
 
 ```bash
-curl -fssL? path
+curl -sL https://raw.githubusercontent.com/eepzii/paddock/main/install.sh | sh
 ```
 
 ### Manual
 
-1. head over to [releases page](path) 
+1. head over to [releases page](https://github.com/eepzii/paddock/releases/) 
 2. download the archive for your system
 3. extract the binary
 
