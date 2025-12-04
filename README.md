@@ -112,7 +112,7 @@ Paddock will output a JSON object to `stdout`.
 
 ## Troubleshooting
 
-* If the program times out a lot it the contents of it probably changed. The program needs to be adjust for the new content. Please contact [me](julianmaxromeis@gmail.com) or open an issue.  
+* If the program times out a lot it the contents of it probably changed. The program needs to be adjust for the new content. Please contact [me](mailto:julianmaxromeis@gmail.com) or open an issue.  
 * If you forgot your old `--email` you have set once and want to login with a new one, then you have to use the `--force` flag. This will log the old account out and log the new account in.
 
 ---
