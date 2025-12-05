@@ -56,7 +56,7 @@ homebrew_casks:
       owner: eepzii
       name: homebrew-tap
     homepage: "https://github.com/eepzii/paddock"
-    description: "Short description of your tool"
+    description: "Paddock is a fast, secure and cross-platform cli tool for automating F1 TV subscription token retrieval."
     license: "MIT"
 
 scoops:
@@ -64,5 +64,5 @@ scoops:
       owner: eepzii
       name: scoop-bucket
     homepage: "https://github.com/eepzii/paddock"
-    description: "Short description of your tool"
+    description: "Paddock is a fast, secure and cross-platform cli tool for automating F1 TV subscription token retrieval."
     license: "MIT"
