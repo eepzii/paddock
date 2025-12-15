@@ -60,6 +60,7 @@ func Login(email, password string) (func(page *rod.Page) error, <-chan PageResul
 				return result.Err
 			}
 			loginResult <- result
+			timeoutTimer.Stop()
 		case <-timeoutTimer.C:
 			return errors.New("timed out while filling form")
 		}

@@ -21,7 +21,7 @@ func Logout(page *rod.Page) error {
 
 	select {
 	case <-done:
-		// continue
+		timeoutTimer.Stop()
 	case <-timeoutTimer.C:
 		return errors.New("timed out")
 	}
