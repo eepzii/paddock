@@ -2,15 +2,20 @@ package browser
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/go-rod/rod"
 )
 
 func (b *Browser) Run(tasks func(page *rod.Page) error) error {
+	pageDone := make(chan struct{})
+	timer := time.NewTimer(PAGE_TIMEOUT_DURATION)
+
 	args := make([]string, len(baseFlags))
 	copy(args, baseFlags)
 
@@ -52,5 +57,17 @@ func (b *Browser) Run(tasks func(page *rod.Page) error) error {
 
 	page := browser.MustPage("")
 
-	return tasks(page)
+	var pageError error
+	go func() {
+		defer close(pageDone)
+		pageError = tasks(page)
+	}()
+
+	select {
+	case <-pageDone:
+		timer.Stop()
+	case <-timer.C:
+		return errors.New("page timed out for unkown reason")
+	}
+	return pageError
 }
