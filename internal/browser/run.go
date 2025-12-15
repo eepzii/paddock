@@ -32,8 +32,8 @@ func (b *Browser) Run(tasks func(page *rod.Page) error) error {
 	if err := cmd.Start(); err != nil {
 		return err
 	}
-	defer cmd.Process.Kill()
 	defer cmd.Wait()
+	defer cmd.Process.Kill()
 
 	scanner := bufio.NewScanner(stderr)
 	var port = ""
