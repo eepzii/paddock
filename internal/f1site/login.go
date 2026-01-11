@@ -38,7 +38,7 @@ func Login(email, password string) (func(page *rod.Page) error, <-chan PageResul
 
 			rod.Try(func() {
 				f1CookieFrame := page.Timeout(LOGIN_EVENT_TIMEOUT_DURATION).MustElement(COOKIE_BANNER_SELECTORS.I_FRAME).MustFrame()
-				f1CookieFrame.Timeout(LOGIN_EVENT_TIMEOUT_DURATION).MustElement(COOKIE_BANNER_SELECTORS.ESSENTIAL_ONLY_BTN).MustWaitInteractable().MustClick()
+				f1CookieFrame.Timeout(LOGIN_EVENT_TIMEOUT_DURATION).MustElementX(COOKIE_BANNER_SELECTORS.ESSENTIAL_ONLY_BTN).MustWaitInteractable().MustClick()
 			})
 
 			wg.Wait()

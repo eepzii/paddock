@@ -24,8 +24,8 @@ var COOKIE_BANNER_SELECTORS = struct {
 	I_FRAME            string
 	ESSENTIAL_ONLY_BTN string
 }{
-	I_FRAME:            "#sp_message_iframe_1406947",
-	ESSENTIAL_ONLY_BTN: "#notice > div.message-component.message-row.unstack > button.message-component.message-button.no-children.focusable.button.button-hover.sp_choice_type_13",
+	I_FRAME:            "iframe[src*='consent.formula1.com']",
+	ESSENTIAL_ONLY_BTN: `//*[@id="notice"]/div[3]/button[1]`,
 }
 
 var LOGIN_FORM_SELECTORS = struct {
