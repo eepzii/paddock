@@ -23,7 +23,12 @@ func Login(email, password string) (func(page *rod.Page) error, <-chan PageResul
 		var timeoutTimer = time.NewTimer(LOGIN_EVENT_TIMEOUT_DURATION)
 		defer timeoutTimer.Stop()
 
-		page.MustNavigate(HOMEPAGE_URL).MustWaitRequestIdle()
+		err := rod.Try(func() {
+			page.MustNavigate(HOMEPAGE_URL).MustWaitRequestIdle()
+		})
+		if err != nil {
+			return errors.New("couldn't navigate to homepage")
+		}
 
 		router := page.HijackRequests()
 		router.MustAdd(REJECT_ALL_URL, handleRejectAll(&wg))
