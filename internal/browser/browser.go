@@ -4,15 +4,13 @@ func New(config Config) (Browser, error) {
 
 	var b = Browser{}
 
-	var browserPath = ""
+	var browserPath = config.CustomBrowserPath
 	if config.CustomBrowserPath == "" {
 		browser, err := findBrowser()
 		if err != nil {
 			return b, err
 		}
 		browserPath = browser
-	} else {
-		browserPath = config.CustomBrowserPath
 	}
 
 	b.commandPath = browserPath
