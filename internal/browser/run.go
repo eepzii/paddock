@@ -67,7 +67,7 @@ func (b *Browser) Run(tasks func(page *rod.Page) error) error {
 	case <-pageDone:
 		timer.Stop()
 	case <-timer.C:
-		return errors.New("page timed out for unkown reason")
+		return errors.New("page timed out for unknown reason")
 	}
 	return pageError
 }
