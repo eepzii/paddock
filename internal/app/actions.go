@@ -64,7 +64,7 @@ func PerformLogout(b *browser.Browser, email string, config storage.Config) erro
 
 	if config.SubscriptionToken != "" && email == config.Email {
 		if err := b.Run(f1site.Logout); err != nil {
-			return fmt.Errorf("failed to log out")
+			return fmt.Errorf("failed to log out: %v", err)
 		}
 	} else if email != config.Email && config.Email != "" {
 		return fmt.Errorf("another account is logged in")
