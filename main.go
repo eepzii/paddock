@@ -47,6 +47,15 @@ func main() {
 		CustomBrowserPath: *browserPathFlag,
 		Headless:          *headlessFlag,
 	}
+	proxyHttpAddress := os.Getenv("PROXY_HOST")
+	if proxyHttpAddress != "" {
+		bConfig.Proxy = browser.Proxy{
+			Address:  proxyHttpAddress,
+			User:     os.Getenv("PROXY_USER"),
+			Password: os.Getenv("PROXY_PASS"),
+		}
+	}
+
 	b, err := browser.New(bConfig)
 	if err != nil {
 		app.PrintFatal(err, startTime)

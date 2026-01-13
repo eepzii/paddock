@@ -13,6 +13,7 @@ func New(config Config) (Browser, error) {
 		browserPath = browser
 	}
 
+	b.proxy = config.Proxy
 	b.commandPath = browserPath
 	b.profilePath = config.FileManager.BrowserProfileDirPath()
 	b.headless = config.Headless

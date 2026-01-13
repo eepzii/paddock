@@ -68,6 +68,34 @@ paddock --email="your_email"
 | `--path` | `string` | **(not safe)** sets the path to your favorite chromium based browser |
 | `--freshness` | `duration` | will check whether the token is in x future still valid |
 
+<br>
+
+#### experimental: using a proxy
+
+With paddock version >=0.3.0 you can now use a proxy. It is recommended to only use residential proxies that are located relatively close from where your program is executed. This feature is in an early stage. There might follow some updates regarding reliability but for a fast login you should stick to a regular login without a proxy or use a proxy that provides low latency. <br><br>
+Before running the standard cli prompt you need to add these envs in the terminal session: <br>
+* `PROXY_HOST` (scheme must be `http://ip:port`)
+* `PROXY_USER` 
+* `PROXY_PASS` 
+
+### bash
+```bash
+# PROXY_HOST scheme must be: http://ip:port 
+export PROXY_HOST="http://ip:port"
+export PROXY_USER="user"
+export PROXY_PASS="password"
+```
+
+### powershell
+```bash
+# PROXY_HOST scheme must be: http://ip:port 
+$env:PROXY_HOST="http://ip:port"
+$env:PROXY_USER="user"
+$env:PROXY_PASS="password"
+```
+
+**NOTE**: using a VPN or a publicly known IP from a data center might fail. <br>
+
 ---
 
 ## How it works

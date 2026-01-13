@@ -4,8 +4,8 @@ import "time"
 
 // time duration
 const (
-	LOGIN_EVENT_TIMEOUT_DURATION = 7 * time.Second
-	LOGOUT_TIMEOUT_DURATION      = 10 * time.Second
+	LOGIN_EVENT_TIMEOUT_DURATION = 15 * time.Second
+	LOGOUT_TIMEOUT_DURATION      = 8 * time.Second
 )
 
 // endpoints

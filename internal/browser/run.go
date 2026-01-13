@@ -19,6 +19,9 @@ func (b *Browser) Run(tasks func(page *rod.Page) error) error {
 	args := make([]string, len(baseFlags))
 	copy(args, baseFlags)
 
+	if b.proxy.Address != "" {
+		args = append(args, fmt.Sprintf("--proxy-server=%s", b.proxy.Address))
+	}
 	if b.headless {
 		args = append(args, "--headless=new")
 	}
@@ -60,6 +63,9 @@ func (b *Browser) Run(tasks func(page *rod.Page) error) error {
 	var pageError error
 	go func() {
 		defer close(pageDone)
+		if b.proxy.Address != "" {
+			go browser.MustHandleAuth(b.proxy.User, b.proxy.Password)()
+		}
 		pageError = tasks(page)
 	}()
 
