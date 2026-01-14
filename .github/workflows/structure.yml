@@ -59,9 +59,6 @@ jobs:
       - name: Run Test
         shell: bash
         run: |
-          echo "Listing current directory:"
-          ls -l
-
           run_test() {
             local test_name=$1
             local path_flag=$2
