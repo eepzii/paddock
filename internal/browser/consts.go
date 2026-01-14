@@ -19,7 +19,7 @@ const (
 )
 
 const (
-	PAGE_TIMEOUT_DURATION = 40 * time.Second
+	PAGE_TIMEOUT_DURATION = 45 * time.Second
 
 	LOOPBACK_ADDRESS = "ws://127.0.0.1"
 	LOOPBACK_PORT    = 9222

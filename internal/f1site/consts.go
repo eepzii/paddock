@@ -4,7 +4,7 @@ import "time"
 
 // time duration
 const (
-	LOGIN_EVENT_TIMEOUT_DURATION = 15 * time.Second
+	LOGIN_EVENT_TIMEOUT_DURATION = 20 * time.Second
 	LOGOUT_TIMEOUT_DURATION      = 8 * time.Second
 )
 
