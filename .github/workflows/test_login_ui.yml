@@ -13,7 +13,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 7
+    timeout-minutes: 4
 
     env:
       FAKE_PASSWORD: ${{ secrets.FAKE_PASSWORD }}
