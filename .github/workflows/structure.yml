@@ -2,7 +2,7 @@ name: Test Website Structure
 
 on:
   schedule:
-    - cron: "0 */2 * * *"
+    - cron: "0 4 * * *"
   workflow_dispatch:
 
 jobs:
