@@ -1,0 +1,116 @@
+name: Test Login And Logout
+
+on:
+  schedule:
+    - cron: "0 14 * * *"
+  workflow_dispatch:
+
+jobs:
+  check-login-and-logout:
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 4
+
+    env:
+      PASSWORD: ${{ secrets.PASSWORD }}
+      EMAIL: ${{ secrets.EMAIL }}
+      PROXY_HOST: ${{ secrets.PROXY_HOST }}
+      PROXY_USER: ${{ secrets.PROXY_USER }}
+      PROXY_PASS: ${{ secrets.PROXY_PASS }}
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version: ">=1.25.5"
+      
+      - name: Build Binary
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == 'Windows' ]]; then
+            go build -o paddock.exe ./
+          else
+            go build -o paddock ./
+          fi
+
+      - name: Set Browser Paths
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == 'Windows' ]]; then
+            echo "CHROME_PATH=C:\Program Files\Google\Chrome\Application\chrome.exe" >> $GITHUB_ENV
+            echo "EDGE_PATH=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" >> $GITHUB_ENV
+            echo "BIN_NAME=./paddock.exe" >> $GITHUB_ENV
+          else
+            echo "CHROME_PATH=/usr/bin/google-chrome" >> $GITHUB_ENV
+            echo "EDGE_PATH=/usr/bin/microsoft-edge" >> $GITHUB_ENV
+            echo "BIN_NAME=./paddock" >> $GITHUB_ENV
+          fi
+
+      - name: Run Test
+        shell: bash
+        run: |
+          run_test() {
+            local test_name=$1
+            local path_flag=$2
+            local use_proxy=$3
+            
+            echo "Testing: $test_name (Proxy: ${use_proxy:-false})"
+            
+            if [[ "$use_proxy" == "true" ]]; then
+                OUTPUT=$(PROXY_HOST="$PROXY_HOST" PROXY_USER="$PROXY_USER" PROXY_PASS="$PROXY_PASS" PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --path="$path_flag" 2>&1 || true)
+            else
+                OUTPUT=$(PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --path="$path_flag" 2>&1 || true)
+            fi
+            
+            echo "$path_flag"
+
+            LOGIN_TOKEN=$(echo "$OUTPUT" | jq -r '.token' 2>/dev/null || echo "")
+            LOGIN_SUCCESS=$(echo "$OUTPUT" | jq -r '.success' 2>/dev/null || echo "")
+            LOGIN_ERROR=$(echo "$OUTPUT" | jq -r '.error' 2>/dev/null || echo "")
+
+            if [[ -n "$LOGIN_TOKEN" ]] && [[ "$LOGIN_SUCCESS" == "true" ]] && [[ -z "$LOGIN_ERROR" ]]; then
+                echo "Login Successful (Verified: Token=Present, Success=True, Error=Empty)."
+            else
+                echo "Login Failed."
+                echo "$OUTPUT"
+                return 1
+            fi
+          
+            sleep 45
+          
+            if [[ "$use_proxy" == "true" ]]; then
+                OUTPUT=$(PROXY_HOST="$PROXY_HOST" PROXY_USER="$PROXY_USER" PROXY_PASS="$PROXY_PASS" PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --path="$path_flag" --logout 2>&1 || true)
+            else
+                OUTPUT=$(PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --path="$path_flag" --logout 2>&1 || true)
+            fi
+            
+            LOGOUT_TOKEN=$(echo "$OUTPUT" | jq -r '.token' 2>/dev/null || echo "")
+            LOGOUT_SUCCESS=$(echo "$OUTPUT" | jq -r '.success' 2>/dev/null || echo "")
+            LOGOUT_ERROR=$(echo "$OUTPUT" | jq -r '.error' 2>/dev/null || echo "")
+          
+            if [[ -z "$LOGOUT_TOKEN" ]] && [[ "$LOGOUT_SUCCESS" == "true" ]] && [[ -z "$LOGOUT_ERROR" ]]; then
+                echo "Logout Successful (Verified: Token=Empty, Success=True, Error=Empty)."
+            else
+                echo "Logout Failed."
+                echo "$OUTPUT"
+                return 1
+            fi
+          
+          }
+
+          EXIT_CODE=0
+
+          if [[ "$RUNNER_OS" == 'Windows' ]]; then
+            run_test "Google Chrome" "$CHROME_PATH" "false" || EXIT_CODE=1
+          else
+            run_test "Microsoft Edge" "$EDGE_PATH" "true" || EXIT_CODE=1
+          fi
+
+          if [ "$EXIT_CODE" == '1' ]; then
+            exit 1
+          fi
