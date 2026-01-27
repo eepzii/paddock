@@ -2,7 +2,7 @@ name: Test Login And Logout
 
 on:
   schedule:
-    - cron: "0 14 * * *"
+    - cron: "30 13 * * *"
   workflow_dispatch:
 
 jobs:
