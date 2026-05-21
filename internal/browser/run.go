@@ -64,7 +64,10 @@ func (b *Browser) Run(tasks func(page *rod.Page) error) error {
 	go func() {
 		defer close(pageDone)
 		if b.proxy.Address != "" {
-			go browser.MustHandleAuth(b.proxy.User, b.proxy.Password)()
+			go func() {
+				err := browser.HandleAuth(b.proxy.User, b.proxy.Password)()
+				fmt.Println(err)
+			}()
 		}
 		pageError = tasks(page)
 	}()
