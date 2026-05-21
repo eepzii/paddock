@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "30 13 * * *"
   workflow_dispatch:
+  pull_request:
 
 jobs:
   check-login-and-logout:
