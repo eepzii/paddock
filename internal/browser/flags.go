@@ -8,6 +8,7 @@ var baseFlags = []string{
 	"--no-default-browser-check",
 	"--disable-background-networking",
 	"--start-maximized",
+	"--disable-dev-shm-usage",
 }
 
 var brandFlags = map[Brand][]string{
