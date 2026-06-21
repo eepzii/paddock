@@ -16,7 +16,4 @@ var brandFlags = map[Brand][]string{
 		"--disable-sync",
 		"--no-welcome-page",
 	},
-	UNKNOWN: {
-		"--no-sandbox",
-	},
 }

@@ -23,6 +23,7 @@ func main() {
 	emailFlag := flags.String("email", "", "sets email")
 	freshnessFlag := flags.Duration("freshness", time.Hour, "checks the tokens validity in x future (max freshness is 96h)")
 	headlessFlag := flags.Bool("headless", false, "disables visual ui")
+	noSandboxFlag := flags.Bool("no-sandbox", false, "disables sandbox environment")
 	logoutFlag := flags.Bool("logout", false, "logs out->  deletes subscriptionToken-> deletes browser-profile")
 	forceFlag := flags.Bool("force", false, "forces login")
 	flags.Parse(os.Args[1:])
@@ -46,6 +47,7 @@ func main() {
 		FileManager:       fileManager,
 		CustomBrowserPath: *browserPathFlag,
 		Headless:          *headlessFlag,
+		NoSandbox:         *noSandboxFlag,
 	}
 	proxyHttpAddress := os.Getenv("PROXY_HOST")
 	if proxyHttpAddress != "" {

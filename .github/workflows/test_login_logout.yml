@@ -3,6 +3,7 @@ name: Test Login And Logout
 on:
   schedule:
     - cron: "30 13 * * *"
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -62,9 +63,9 @@ jobs:
             echo "Testing: $test_name (Proxy: ${use_proxy:-false})"
             
             if [[ "$use_proxy" == "true" ]]; then
-                OUTPUT=$(PROXY_HOST="$PROXY_HOST" PROXY_USER="$PROXY_USER" PROXY_PASS="$PROXY_PASS" PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --path="$path_flag" 2>&1 || true)
+                OUTPUT=$(PROXY_HOST="$PROXY_HOST" PROXY_USER="$PROXY_USER" PROXY_PASS="$PROXY_PASS" PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --no-sandbox --path="$path_flag" 2>&1 || true)
             else
-                OUTPUT=$(PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --path="$path_flag" 2>&1 || true)
+                OUTPUT=$(PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --no-sandbox --path="$path_flag" 2>&1 || true)
             fi
             
             echo "$path_flag"
@@ -84,9 +85,9 @@ jobs:
             sleep 45
           
             if [[ "$use_proxy" == "true" ]]; then
-                OUTPUT=$(PROXY_HOST="$PROXY_HOST" PROXY_USER="$PROXY_USER" PROXY_PASS="$PROXY_PASS" PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --path="$path_flag" --logout 2>&1 || true)
+                OUTPUT=$(PROXY_HOST="$PROXY_HOST" PROXY_USER="$PROXY_USER" PROXY_PASS="$PROXY_PASS" PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --no-sandbox --path="$path_flag" --logout 2>&1 || true)
             else
-                OUTPUT=$(PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --path="$path_flag" --logout 2>&1 || true)
+                OUTPUT=$(PASSWORD="$PASSWORD" $BIN_NAME --email="$EMAIL" --headless --no-sandbox --path="$path_flag" --logout 2>&1 || true)
             fi
             
             LOGOUT_TOKEN=$(echo "$OUTPUT" | jq -r '.token' 2>/dev/null || echo "")

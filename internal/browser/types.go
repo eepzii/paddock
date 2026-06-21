@@ -8,6 +8,7 @@ type Browser struct {
 	commandPath string
 	profilePath string
 	headless    bool
+	noSandbox   bool
 	brand       Brand
 	proxy       Proxy
 }
@@ -16,6 +17,7 @@ type Config struct {
 	FileManager       *storage.FileManager
 	CustomBrowserPath string
 	Headless          bool
+	NoSandbox         bool
 	Proxy             Proxy
 }
 

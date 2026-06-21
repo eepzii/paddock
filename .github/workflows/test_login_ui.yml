@@ -3,6 +3,7 @@ name: Test Login UI Elements
 on:
   schedule:
     - cron: "0 4 * * *"
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -67,9 +68,9 @@ jobs:
             echo "Testing: $test_name (Proxy: ${use_proxy:-false})"
             
             if [[ "$use_proxy" == "true" ]]; then
-                OUTPUT=$(PROXY_HOST="$PROXY_HOST" PROXY_USER="$PROXY_USER" PROXY_PASS="$PROXY_PASS" PASSWORD="$FAKE_PASSWORD" $BIN_NAME --email="$FAKE_EMAIL" --headless --path="$path_flag" 2>&1 || true)
+                OUTPUT=$(PROXY_HOST="$PROXY_HOST" PROXY_USER="$PROXY_USER" PROXY_PASS="$PROXY_PASS" PASSWORD="$FAKE_PASSWORD" $BIN_NAME --email="$FAKE_EMAIL" --headless --no-sandbox --path="$path_flag" 2>&1 || true)
             else
-                OUTPUT=$(PASSWORD="$FAKE_PASSWORD" $BIN_NAME --email="$FAKE_EMAIL" --headless --path="$path_flag" 2>&1 || true)
+                OUTPUT=$(PASSWORD="$FAKE_PASSWORD" $BIN_NAME --email="$FAKE_EMAIL" --headless --no-sandbox --path="$path_flag" 2>&1 || true)
             fi
             
             echo "$path_flag"
