@@ -16,6 +16,7 @@ func New(config Config) (Browser, error) {
 	b.proxy = config.Proxy
 	b.commandPath = browserPath
 	b.profilePath = config.FileManager.BrowserProfileDirPath()
+	b.noSandbox = config.NoSandbox
 	b.headless = config.Headless
 	b.brand = findBrowserBrand(browserPath)
 

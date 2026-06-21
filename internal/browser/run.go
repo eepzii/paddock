@@ -25,6 +25,10 @@ func (b *Browser) Run(tasks func(page *rod.Page) error) error {
 	if b.headless {
 		args = append(args, "--headless=new")
 	}
+	if b.noSandbox {
+		args = append(args, "--no-sandbox")
+	}
+
 	if extras, ok := brandFlags[b.brand]; ok {
 		args = append(args, extras...)
 	}
