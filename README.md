@@ -66,6 +66,7 @@ paddock --email="your_email"
 | `--logout` | `bool` | will log you out from your current session |
 | `--force` | `bool` | forces a login with a new set `--email` |
 | `--path` | `string` | **(not safe)** sets the path to your favorite chromium based browser |
+| `--no-sandbox` | `bool` | **(use with caution)** disables the sandboxed environment of the chromium browser |
 | `--freshness` | `duration` | will check whether the token is in x future still valid |
 
 <br>
