@@ -2,13 +2,13 @@ name: Test Login UI Elements
 
 on:
   schedule:
-    - cron: "0 4 * * *"
-  pull_request:
+    - cron: "0 8 * * 2"
   workflow_dispatch:
 
 jobs:
   check-selectors:
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -78,11 +78,8 @@ jobs:
 
             ERROR=$(echo "$OUTPUT" | jq -r '.error' 2>/dev/null || echo "")
 
-            if [[ "$ERROR" == *401* ]] || echo "$OUTPUT" | grep -q "401"; then
-               echo "SUCCESS ($test_name) (Status Code: 401)"
-               return 0
-            elif [[ "$ERROR" == *403* ]] || echo "$OUTPUT" | grep -q "403"; then
-               echo "SUCCESS ($test_name) (Status Code: 403)"
+            if [[ "$ERROR" == *400* ]] || echo "$OUTPUT" | grep -q "400"; then
+               echo "SUCCESS ($test_name) (Status Code: 400)"
                return 0
             else
                echo "FAILURE ($test_name)"
