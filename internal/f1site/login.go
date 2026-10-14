@@ -2,6 +2,7 @@ package f1site
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -17,9 +18,6 @@ func Login(email, password string) (func(page *rod.Page) error, <-chan PageResul
 		var wgDoneChan = make(chan struct{})
 		wg.Add(3)
 
-		var hijackResult = make(chan PageResult)
-		defer close(hijackResult)
-
 		var timeoutTimer = time.NewTimer(LOGIN_EVENT_TIMEOUT_DURATION)
 		defer timeoutTimer.Stop()
 
@@ -34,8 +32,10 @@ func Login(email, password string) (func(page *rod.Page) error, <-chan PageResul
 		router.MustAdd(REJECT_ALL_URL, handleRejectAll(&wg))
 		router.MustAdd(GDPR_URL, handleGDPR(&wg))
 		router.MustAdd(HOMEPAGE_URL, handleConsentCookies(&wg))
-		byPasswordFunc, byPasswordChan := handleByPassword()
-		router.MustAdd(BY_PASSWORD_URL, byPasswordFunc)
+		customHTMLFunc, customHTMLErr := handleCustomHTML()
+		router.MustAdd(CUSTOM_HTML_URL, customHTMLFunc)
+		tokenFunc, tokenChan := handleToken()
+		router.MustAdd(TOKEN_URL, tokenFunc)
 		go router.Run()
 
 		go func() {
@@ -62,19 +62,33 @@ func Login(email, password string) (func(page *rod.Page) error, <-chan PageResul
 		page.MustElement(LOGIN_FORM_SELECTORS.PASSWORD_INPUT).MustWaitInteractable().MustInput(password)
 		page.MustElement(LOGIN_FORM_SELECTORS.SUBMIT_BTN).MustWaitInteractable().MustClick()
 
-		select {
-		case result := <-byPasswordChan:
-			if result.Err != nil {
-				return result.Err
+		var before bool
+		for {
+			select {
+			case err := <-customHTMLErr:
+				if err != nil {
+					return err
+				}
+
+				before = true
+
+			case result := <-tokenChan:
+				if result.Err != nil {
+					return result.Err
+				}
+
+				if !before {
+					return fmt.Errorf("failed to hijack or process: %q", CUSTOM_HTML_URL)
+				}
+
+				loginResult <- result
+				timeoutTimer.Stop()
+
+				page.MustWait(WAIT_COOKIE_EXISTS)
+				return nil
+			case <-timeoutTimer.C:
+				return errors.New("timed out while filling form")
 			}
-			loginResult <- result
-			timeoutTimer.Stop()
-		case <-timeoutTimer.C:
-			return errors.New("timed out while filling form")
 		}
-
-		page.MustWait(WAIT_COOKIE_EXISTS)
-
-		return nil
 	}, loginResult
 }

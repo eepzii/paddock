@@ -14,7 +14,8 @@ const (
 	LOGIN_URL    = "https://account.formula1.com/#/en/login?redirect=https%3A%2F%2Fwww.formula1.com%2Fen&lead_source=web_f1core"
 	LOGOUT_URL   = "https://account.formula1.com/#/en/logout?redirect=https%3A%2F%2Fwww.formula1.com%2Fen"
 
-	BY_PASSWORD_URL = "https://api.formula1.com/v2/account/subscriber/authenticate/by-password"
+	TOKEN_URL       = "https://id.formula1.com/as/token"
+	CUSTOM_HTML_URL = "https://id.formula1.com/davinci/connections/*/capabilities/customHTMLTemplate"
 	REJECT_ALL_URL  = "https://consent.formula1.com/wrapper/v2/choice/reject-all*"
 	GDPR_URL        = "https://consent.formula1.com/wrapper/v2/choice/gdpr*"
 )
@@ -33,9 +34,9 @@ var LOGIN_FORM_SELECTORS = struct {
 	PASSWORD_INPUT string
 	SUBMIT_BTN     string
 }{
-	EMAIL_INPUT:    "#loginform > div:nth-child(2) > input",
-	PASSWORD_INPUT: "#loginform > div.field.password > input",
-	SUBMIT_BTN:     "#loginform > div.actions > button",
+	EMAIL_INPUT:    "#username",
+	PASSWORD_INPUT: "#password",
+	SUBMIT_BTN:     "#btnLogin",
 }
 
 // javascript

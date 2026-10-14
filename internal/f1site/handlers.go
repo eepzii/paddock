@@ -1,7 +1,7 @@
 package f1site
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"sync"
@@ -10,28 +10,47 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
-func handleByPassword() (func(ctx *rod.Hijack), <-chan PageResult) {
+func handleCustomHTML() (func(ctx *rod.Hijack), <-chan error) {
+	var errChan = make(chan error, 1)
+	return func(ctx *rod.Hijack) {
+		if ctx.Request.Method() == http.MethodPost {
+			if err := ctx.LoadResponse(http.DefaultClient, true); err != nil {
+				ctx.ContinueRequest(&proto.FetchContinueRequest{})
+				return
+			}
+			var err error
+
+			if code := ctx.Response.Payload().ResponseCode; code != http.StatusOK {
+				err = fmt.Errorf("invalid password or email address (status: %d)", code)
+			}
+
+			errChan <- err
+		} else {
+			ctx.ContinueRequest(&proto.FetchContinueRequest{})
+		}
+	}, errChan
+}
+
+func handleToken() (func(ctx *rod.Hijack), <-chan PageResult) {
 	var loginResultChan = make(chan PageResult, 1)
 	return func(ctx *rod.Hijack) {
 		if ctx.Request.Method() == http.MethodPost {
 			if err := ctx.LoadResponse(http.DefaultClient, true); err != nil {
+				ctx.ContinueRequest(&proto.FetchContinueRequest{})
 				return
 			}
 			var loginResult = PageResult{}
 
-			switch ctx.Response.Payload().ResponseCode {
-			case http.StatusOK:
+			if code := ctx.Response.Payload().ResponseCode; code != http.StatusOK {
+				loginResult.Err = fmt.Errorf("unexpected response code: %v", code)
+			} else {
 				loginResult.Response = ctx.Response
-			case http.StatusUnauthorized:
-				loginResult.Err = errors.New(`{"401":"unauthorized"}`)
-			case http.StatusForbidden:
-				loginResult.Err = errors.New(`{"403": "forbidden"}`)
-			default:
-				loginResult.Err = errors.New("no login response found")
 			}
+
 			loginResultChan <- loginResult
+		} else {
+			ctx.ContinueRequest(&proto.FetchContinueRequest{})
 		}
-		ctx.ContinueRequest(&proto.FetchContinueRequest{})
 	}, loginResultChan
 }
 
